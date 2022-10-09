@@ -1,0 +1,6 @@
+name: VanillaTorquent
+api-version: 1.19
+main: net.platzhaltergaming.vanillatorquent.paper.Main
+author: "Alexander Trost"
+version: ${project.version}
+load: POSTWORLD
