@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.Event.Result;
@@ -33,27 +34,27 @@ public class CoalIntoFurnance implements Listener {
         HandlerList.unregisterAll(this);
     }
 
-    @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent e) {
-        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
-        if (e.useInteractedBlock() == Result.DENY) {
+        if (event.useInteractedBlock() == Result.DENY) {
             return;
         }
 
-        Block block = e.getClickedBlock();
+        Block block = event.getClickedBlock();
         if (block == null) {
             return;
         }
-
-        Player player = e.getPlayer();
 
         // There's also BLAST_FURNACE block
         if (!block.getType().equals(Material.FURNACE) && !block.getType().equals(Material.BLAST_FURNACE)) {
             return;
         }
+
+        Player player = event.getPlayer();
         // Check if item in hand is a valid fuel
         ItemStack playerFuel = player.getInventory().getItemInMainHand();
         if (playerFuel == null || playerFuel.getType().equals(Material.AIR)) {
@@ -97,7 +98,7 @@ public class CoalIntoFurnance implements Listener {
             furnanceInventory.setFuel(playerFuel);
         }
 
-        e.setCancelled(true);
+        event.setCancelled(true);
     }
 
 }

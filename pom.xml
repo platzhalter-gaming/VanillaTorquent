@@ -8,8 +8,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>18</maven.compiler.source>
+    <maven.compiler.target>18</maven.compiler.target>
   </properties>
 
   <pluginRepositories>
@@ -30,6 +30,11 @@
       <id>jitpack.io</id>
       <url>https://jitpack.io</url>
     </repository>
+    <!-- GitHub platzhalter-gaming CommonLib -->
+    <repository>
+      <id>github-platzhalter-gaming-commonlib</id>
+      <url>https://maven.pkg.github.com/platzhalter-gaming/CommonLib</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -39,6 +44,20 @@
       <artifactId>lombok</artifactId>
       <version>1.18.24</version>
       <scope>provided</scope>
+    </dependency>
+    <!-- Configurate -->
+    <dependency>
+      <groupId>org.spongepowered</groupId>
+      <artifactId>configurate-yaml</artifactId>
+      <version>4.1.2</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <!-- Already shaded in bungee -->
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Paper -->
     <dependency>
@@ -54,6 +73,13 @@
       <type>javadoc</type>
       <scope>provided</scope>
     </dependency>
+    <!-- CommonLib Messages -->
+    <dependency>
+      <groupId>net.platzhaltergaming.commonlib</groupId>
+      <artifactId>Messages</artifactId>
+      <version>1.3.0</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -66,11 +92,58 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>3.0.0-M2</version>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.3.1-SNAPSHOT</version>
         <configuration>
-          <skip>true</skip>
+          <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+          <artifactSet>
+            <excludes>
+              <exclude>com.google.*:*</exclude>
+              <exclude>org.checkerframework*:*</exclude>
+              <exclude>org.jetbrains:*</exclude>
+            </excludes>
+          </artifactSet>
+          <relocations>
+            <!-- Configurate -->
+            <relocation>
+              <pattern>org.spongepowered.configurate</pattern>
+              <shadedPattern>net.platzhaltergaming.messagecontroller.libs.org.spongepowered.configurate</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.typesafe.config</pattern>
+              <shadedPattern>net.platzhaltergaming.messagecontroller.libs.com.typesafe.config</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>io.leangen.geantyref</pattern>
+              <shadedPattern>net.platzhaltergaming.messagecontroller.libs.io.leangen.geantyref</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.yaml.snakeyaml</pattern>
+              <shadedPattern>net.platzhaltergaming.messagecontroller.libs.org.yaml.snakeyaml</shadedPattern>
+            </relocation>
+            <!-- CommonLib -->
+            <relocation>
+              <pattern>net.platzhaltergaming.commonlib</pattern>
+              <shadedPattern>net.platzhaltergaming.vanillatorquent.libs.net.platzhaltergaming.commonlib</shadedPattern>
+            </relocation>
+          </relocations>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/**</exclude>
+              </excludes>
+            </filter>
+          </filters>
         </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -79,7 +152,7 @@
       <repository>
           <id>github</id>
           <name>GitHub platzhalter-gaming Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/platzhalter-gaming/Essentiale</url>
+          <url>https://maven.pkg.github.com/platzhalter-gaming/VanillaTorquent</url>
           <layout>default</layout>
       </repository>
   </distributionManagement>

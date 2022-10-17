@@ -12,8 +12,17 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: "temurin"
-          java-version: "17"
+          java-version: "18"
           cache: "maven"
+
+      - uses: s4u/maven-settings-action@v2.6.0
+        with:
+          servers: |
+            [{
+              "id": "github-platzhalter-gaming-commonlib",
+              "username": "galexrt",
+              "password": "${{ secrets.GH_PAT }}"
+            }]
 
       - name: Restore Maven cache
         uses: skjolber/maven-cache-github-action@v1
