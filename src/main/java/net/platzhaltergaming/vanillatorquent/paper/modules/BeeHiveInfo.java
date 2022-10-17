@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
-import org.bukkit.block.Beehive;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Beehive;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -42,12 +43,16 @@ public class BeeHiveInfo implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW)
-    public void on(PlayerInteractEvent event) {
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
         if (event.useInteractedBlock() == Result.DENY) {
+            return;
+        }
+
+        if (!event.getHand().equals(EquipmentSlot.HAND)) {
             return;
         }
 
@@ -66,17 +71,18 @@ public class BeeHiveInfo implements Listener {
             return;
         }
 
-        Beehive beehive = (Beehive) block;
-        org.bukkit.block.data.type.Beehive beehiveData = (org.bukkit.block.data.type.Beehive) beehive.getBlockData();
+        Beehive beehive = (Beehive) block.getBlockData();
+        org.bukkit.block.Beehive beehiveState = (org.bukkit.block.Beehive) block.getState();
 
         List<TagResolver> tags = new ArrayList<>();
-        tags.add(Placeholder.unparsed("bee-count", String.valueOf(beehive.getEntityCount())));
-        tags.add(Placeholder.unparsed("honey-level", String.valueOf(beehiveData.getHoneyLevel())));
-        tags.add(Placeholder.unparsed("max-honey-level", String.valueOf(beehiveData.getMaximumHoneyLevel())));
+        tags.add(Placeholder.unparsed("bees", String.valueOf(beehiveState.getEntityCount())));
+        tags.add(Placeholder.unparsed("max-bees", String.valueOf(beehiveState.getMaxEntities())));
+        tags.add(Placeholder.unparsed("honey-level", String.valueOf(beehive.getHoneyLevel())));
+        tags.add(Placeholder.unparsed("max-honey-level", String.valueOf(beehive.getMaximumHoneyLevel())));
 
         Player player = event.getPlayer();
         player.sendMessage(
-                miniMessage.deserialize(messages.get(player.locale(), "beehiveinfo.chat", TagResolver.resolver(tags))));
+                miniMessage.deserialize(messages.get(player.locale(), "beehiveinfo.chat"), TagResolver.resolver(tags)));
     }
 
 }

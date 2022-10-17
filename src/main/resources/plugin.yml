@@ -4,3 +4,5 @@ main: net.platzhaltergaming.vanillatorquent.paper.Main
 author: "Alexander Trost"
 version: ${project.version}
 load: POSTWORLD
+libraries:
+  - com.ibm.icu:icu4j:70.1
