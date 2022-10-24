@@ -6,3 +6,6 @@ version: ${project.version}
 load: POSTWORLD
 libraries:
   - com.ibm.icu:icu4j:70.1
+commands:
+  vanillatorquentsetplayerspawn:
+    permission: "vanillatorquent.command.vanillatorquentsetplayerspawn"

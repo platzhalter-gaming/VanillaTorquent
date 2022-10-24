@@ -17,6 +17,7 @@ import net.platzhaltergaming.commonlib.messages.Messages;
 import net.platzhaltergaming.vanillatorquent.paper.configurate.LocaleSerializer;
 import net.platzhaltergaming.vanillatorquent.paper.modules.BeeHiveInfo;
 import net.platzhaltergaming.vanillatorquent.paper.modules.CoalIntoFurnance;
+import net.platzhaltergaming.vanillatorquent.paper.modules.SpawnHelper;
 import net.platzhaltergaming.vanillatorquent.paper.settings.SettingsHolder;
 
 @Getter
@@ -28,6 +29,7 @@ public class Main extends JavaPlugin {
 
     private BeeHiveInfo beeHiveInfo;
     private CoalIntoFurnance coalIntoFurnance;
+    private SpawnHelper spawnHelper;
 
     @Override
     public void onEnable() {
@@ -41,6 +43,9 @@ public class Main extends JavaPlugin {
 
         coalIntoFurnance = new CoalIntoFurnance(this);
         coalIntoFurnance.onEnable();
+
+        spawnHelper = new SpawnHelper(this);
+        spawnHelper.onEnable();
     }
 
     @Override
@@ -51,6 +56,10 @@ public class Main extends JavaPlugin {
 
         if (coalIntoFurnance != null) {
             coalIntoFurnance.onDisable();
+        }
+
+        if (spawnHelper != null) {
+            spawnHelper.onDisable();
         }
     }
 
