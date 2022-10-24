@@ -41,7 +41,7 @@ public class SpawnHelper implements CommandExecutor {
             return false;
         }
 
-        return player.performCommand("/setspawn");
+        return player.performCommand("setspawn");
     }
 
 }
